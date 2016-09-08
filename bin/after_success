@@ -32,12 +32,20 @@ if branch == 'master'
         client.use_ssl = true
         response = client.put(uri.path, data.to_json, headers)
 
+        uri = URI.parse("https://maxwellforest.atlassian.net/rest/api/2/issue/#{t_id}/comment")
+        data = {"body": "Updated in build #{build_number}"}
+        headers = {"Content-Type" => "application/json", "Authorization" => "Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n"}
+
+        client = Net::HTTP.new(uri.host, uri.port)
+        client.use_ssl = true
+        response = client.post(uri.path, data.to_json, headers)
+
       rescue
         sleep 5
         retry if (retries -=1) > 0
       end
 
-      if response.code != 201
+      if response.nil? || response.code != 201
         notifier = Slack::Notifier.new 'https://hooks.slack.com/services/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',
           channel: '#dev',
           username: 'TravisBot'
