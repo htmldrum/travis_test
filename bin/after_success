@@ -24,7 +24,6 @@ if branch == 'master'
       retries = 5
 
       begin
-
         uri = URI.parse("https://maxwellforest.atlassian.net/rest/api/2/issue/#{t_id}")
         data = {"fields": {"customfield_10800": build_number.to_s}}
         headers = {"Content-Type" => "application/json", "Authorization" => "Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n"}
