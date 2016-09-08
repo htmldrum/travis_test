@@ -35,6 +35,7 @@ group :development, :test do
   gem 'byebug', platform: :mri
   gem 'spring-commands-rspec'
   gem 'rspec-rails', '~> 3.5'
+  gem 'rspec'
 end
 
 group :development do
