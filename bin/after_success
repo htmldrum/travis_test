@@ -1,5 +1,25 @@
 #!/usr/bin/env ruby
+require 'set'
 
-puts ENV['TRAVIS_BUILD_NUMBER']
-puts ENV['TRAVIS_BRANCH']
-puts ENV['TRAVIS_COMMIT_RANGE']
+build_number = ENV['TRAVIS_BUILD_NUMBER']
+branch = ENV['TRAVIS_BRANCH']
+commit_range = ENV['TRAVIS_COMMIT_RANGE']
+glog = `git log #{commit_range}`
+ticketRE = /\[([A-z,0-9]+\-[A-z,0-9]+)\]/
+
+if branch == 'master'
+  m = glog.scan(ticketRE)
+  tickets_to_update = Set.new(m)
+
+  tickets_to_update.each do |t_id|
+    puts "Updating #{t_id} with build_number(#{build_number})"
+    `curl -D- -X PUT --data "{\"fields\": {\"customfield_10800\":\"#{build_number}\"}}" -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/#{t_id}"`
+  end
+end
+
+
+# custom_field_10800
+# Works
+#curl -D- -X GET -u james.meldrum@maxwellforest.com:helloSally -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/ofdd-143"
+#curl -D- -X GET -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/ofdd-143"
+#curl -D- -X PUT --data "{\"fields\": {\"customfield_10800\":\"yolo swaggins\"}}" -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/ofdd-143"
