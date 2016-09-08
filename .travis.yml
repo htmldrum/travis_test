@@ -15,6 +15,7 @@ script:
 - bundle exec rake db:schema:load
 - bundle exec rake db:test:prepare
 - bundle exec rspec
+after_success: ./bin/after_success
 notifications:
   email: false
   slack:
