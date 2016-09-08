@@ -46,12 +46,10 @@ if branch == 'master'
       end
 
       if response.nil? || response.code != 201
-        puts "#{response.nil?}"
-        puts "#{response.code}"
         notifier = Slack::Notifier.new 'https://hooks.slack.com/services/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',
           channel: '#jira_updates',
           username: 'TravisBot'
-        notifier.ping "Travis <-> JIRA bridge failed for build: #{build_number} of #{repo_name}", icon_emoji: ':warning:'
+        notifier.ping "Travis <-> JIRA bridge failed for build: #{build_number} of #{repo_name} for ticket number #{t_id}. Response code: #{response.code}", icon_emoji: ':warning:'
       else
         notifier = Slack::Notifier.new 'https://hooks.slack.com/services/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',
           channel: '#jira_updates',
