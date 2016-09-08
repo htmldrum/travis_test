@@ -56,7 +56,7 @@ if branch == 'master'
         notifier = Slack::Notifier.new 'https://hooks.slack.com/services/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',
           channel: '#jira_updates',
           username: 'TravisBot'
-        notifier.ping "#{repo_name}::#{build_number} updates the following tickets: #{puts *tickets_to_update}", icon_emoji: ':chart_with_upwards_trend:'
+        notifier.ping "#{repo_name}::#{build_number} updates the following tickets: #{t_id}", icon_emoji: ':chart_with_upwards_trend:'
       end
     end
   end
