@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 require 'rubygems'
 require 'set'
 require 'net/http'
