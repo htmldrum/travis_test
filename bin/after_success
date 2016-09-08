@@ -45,7 +45,7 @@ if branch == 'master'
         retry if (retries -=1) > 0
       end
 
-      if response.nil? || response.code != 201
+      if response.nil? || response.code != "201"
         notifier = Slack::Notifier.new 'https://hooks.slack.com/services/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',
           channel: '#jira_updates',
           username: 'TravisBot'
