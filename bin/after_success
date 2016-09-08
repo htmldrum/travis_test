@@ -11,10 +11,13 @@ if branch == 'master'
   m = glog.scan(ticketRE)
   tickets_to_update = Set.new(m)
 
-  tickets_to_update.each do |t_id|
+  tickets_to_update.each do |t|
+    t_id = t.downcase
     puts "Updating #{t_id} with build_number(#{build_number})"
     `curl -D- -X PUT --data "{\"fields\": {\"customfield_10800\":\"#{build_number}\"}}" -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/#{t_id}"`
   end
+else
+  puts "Not on master(#{branch}), not updating JIRA."
 end
 
 
