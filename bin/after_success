@@ -1,5 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 
-echo "ENV"
-echo "==="
-env
+puts ENV['TRAVIS_BUILD_NUMBER']
+puts ENV['TRAVIS_BRANCH']
+puts ENV['TRAVIS_COMMIT_RANGE']
