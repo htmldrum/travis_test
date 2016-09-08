@@ -3,10 +3,12 @@ require 'set'
 require 'net/http'
 require 'uri'
 require 'json'
+require 'slack-notifier'
 
 build_number = ENV['TRAVIS_BUILD_NUMBER']
 branch = ENV['TRAVIS_BRANCH']
 commit_range = ENV['TRAVIS_COMMIT_RANGE']
+repo_name = ENV['TRAVIS_REPO_SLUG']
 glog = `git log #{commit_range}`
 ticketRE = /\[([A-z,0-9]+\-[A-z,0-9]+)\]/
 
@@ -28,7 +30,12 @@ if branch == 'master'
       puts response.code
       puts response.body
 
-      #puts `curl -D- -X PUT --data "{\"fields\": {\"customfield_10800\":\"#{build_number}\"}}" -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/#{t_id}"`
+      if response.code != 201
+        notifier = Slack::Notifier.new 'https://hooks.slack.com/services/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',
+          channel: '#dev',
+          username: 'TravisBot'
+        notifier.ping "Travis <-> JIRA bridge failed for build: #{build_number} of #{repo_name}", icon_emoji: ':warning:'
+      end
     end
   end
 else
@@ -40,3 +47,4 @@ end
 #curl -D- -X GET -u james.meldrum@maxwellforest.com:helloSally -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/ofdd-143"
 #curl -D- -X GET -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/ofdd-143"
 #curl -D- -X PUT --data "{\"fields\": {\"customfield_10800\":\"yolo swaggins\"}}" -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/ofdd-143"
+#puts `curl -D- -X PUT --data "{\"fields\": {\"customfield_10800\":\"#{build_number}\"}}" -H "Authorization: Basic amFtZXMubWVsZHJ1bUBtYXh3ZWxsZm9yZXN0LmNvbTpoZWxsb1NhbGx5\n" -H "Content-Type: application/json" "https://maxwellforest.atlassian.net:443/rest/api/2/issue/#{t_id}"`
